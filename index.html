@@ -65,14 +65,12 @@
         #celebration-message { position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%); font-size: 2rem; color: #facc15; font-weight: bold; text-shadow: 2px 2px 4px #000; z-index: 20; display: none; text-align: center; animation: pulseMessage 1.5s infinite; }
         @keyframes pulseMessage { 0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 50% { transform: translate(-50%, -50%) scale(1.05); opacity: 0.8; } }
         
-        /* Touch Controls */
-        #touch-controls { display: none; /* Hidden by default */ }
-        .touch-button { position: absolute; bottom: 20px; width: 60px; height: 60px; background-color: rgba(255, 255, 255, 0.2); border: 2px solid rgba(255, 255, 255, 0.4); border-radius: 50%; z-index: 30; user-select: none; -webkit-user-select: none; display: flex; align-items: center; justify-content: center; }
-        .touch-button:active { background-color: rgba(255, 255, 255, 0.4); }
-        #touch-left { left: 20px; }
-        #touch-right { left: 100px; }
-        #touch-jump { right: 20px; width: 80px; height: 80px; }
-
+        /* Touch Controls - Relocated */
+        #touch-controls { display: none; justify-content: space-between; align-items: center; padding: 1rem 0; max-width: 400px; margin: 0 auto; }
+        .touch-button { width: 70px; height: 70px; background-color: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 50%; user-select: none; -webkit-user-select: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background-color 0.2s ease; }
+        .touch-button:active { background-color: rgba(255, 255, 255, 0.3); }
+        #touch-controls div:first-child { display: flex; gap: 1rem; }
+        
         /* Responsive Styles */
         @media (max-width: 768px) {
             h1 { font-size: 3rem; }
@@ -80,9 +78,9 @@
             nav a { font-size: 0.8rem; padding: 0.25rem 0.5rem; }
             #game-canvas-container { height: 300px; }
             #celebration-message { font-size: 1.5rem; }
-            #touch-controls { display: block; } /* Show touch controls on smaller screens */
-            .desktop-only-kbd { display: none; } /* Hide keyboard instructions */
-            .custom-cursor { display: none; } /* Hide custom cursor on touch devices */
+            #touch-controls { display: flex; } /* Show touch controls on smaller screens */
+            .desktop-only-kbd { display: none; } 
+            .custom-cursor { display: none; }
         }
     </style>
 </head>
@@ -128,18 +126,21 @@
             </p>
             <div id="game-canvas-container"> 
                 <canvas id="game-canvas"></canvas> 
-                <div id="touch-controls">
+                <div id="celebration-message">Congratulations! Journey Complete!</div>
+            </div>
+            <!-- Touch controls moved outside and below the game canvas container -->
+            <div id="touch-controls">
+                <div>
                     <div id="touch-left" class="touch-button">
                         <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                     </div>
                     <div id="touch-right" class="touch-button">
                         <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                     </div>
-                    <div id="touch-jump" class="touch-button">
-                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
-                    </div>
                 </div>
-                <div id="celebration-message">Congratulations! Journey Complete!</div>
+                <div id="touch-jump" class="touch-button">
+                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+                </div>
             </div>
            
             <div id="game-content-display" class="mt-8">
@@ -313,7 +314,7 @@
 
             const GRAVITY = 0.4; 
             const JUMP_FORCE = -10.5; 
-            const PLAYER_SPEED = 4; 
+            const PLAYER_SPEED = 6; 
             
             const STICK_MAN_HEAD_RADIUS = 10; 
             const STICK_MAN_TORSO_WIDTH = 8;  
@@ -365,38 +366,38 @@
                 const HORIZONTAL_GAP = 90; 
 
                 platforms = [ 
-                    { x: currentX, y: gameInternalHeight - PLATFORM_HEIGHT, width: 225, height: PLATFORM_HEIGHT, color: '#4b5563', type: 'normal'}, 
+                    { x: currentX, y: gameInternalHeight - PLATFORM_HEIGHT, width: 450, height: PLATFORM_HEIGHT, color: '#4b5563', type: 'normal'}, 
                 ];
                 currentX += platforms[0].width + HORIZONTAL_GAP;
 
-                platforms.push({ x: currentX, y: gameInternalHeight - PLATFORM_HEIGHT - 50, width: 200, height: PLATFORM_HEIGHT, color: '#1e40af', type: 'checkpoint', contentKey: 'btechDetails'});
+                platforms.push({ x: currentX, y: gameInternalHeight - PLATFORM_HEIGHT - 50, width: 400, height: PLATFORM_HEIGHT, color: '#1e40af', type: 'checkpoint', contentKey: 'btechDetails'});
                 currentX += platforms[platforms.length-1].width + HORIZONTAL_GAP;
-                platforms.push({ x: currentX, y: gameInternalHeight - PLATFORM_HEIGHT - 100, width: 200, height: PLATFORM_HEIGHT, color: '#1e40af', type: 'checkpoint', contentKey: 'mscDetails'});
-                currentX += platforms[platforms.length-1].width + HORIZONTAL_GAP;
-
-                platforms.push({ x: currentX, y: gameInternalHeight - PLATFORM_HEIGHT - 70, width: 190, height: PLATFORM_HEIGHT, color: '#374151', type: 'normal'});
+                platforms.push({ x: currentX, y: gameInternalHeight - PLATFORM_HEIGHT - 100, width: 400, height: PLATFORM_HEIGHT, color: '#1e40af', type: 'checkpoint', contentKey: 'mscDetails'});
                 currentX += platforms[platforms.length-1].width + HORIZONTAL_GAP;
 
-                platforms.push({ x: currentX, y: gameInternalHeight - PLATFORM_HEIGHT - 130, width: 200, height: PLATFORM_HEIGHT, color: '#1d4ed8', type: 'checkpoint', contentKey: 'fraunhoferVrCad'});
-                currentX += platforms[platforms.length-1].width + HORIZONTAL_GAP;
-                platforms.push({ x: currentX, y: gameInternalHeight - PLATFORM_HEIGHT - 90, width: 200, height: PLATFORM_HEIGHT, color: '#1d4ed8', type: 'checkpoint', contentKey: 'fraunhoferArDigital'});
-                currentX += platforms[platforms.length-1].width + HORIZONTAL_GAP;
-                platforms.push({ x: currentX, y: gameInternalHeight - PLATFORM_HEIGHT - 150, width: 200, height: PLATFORM_HEIGHT, color: '#1d4ed8', type: 'checkpoint', contentKey: 'fraunhoferThesis'});
+                platforms.push({ x: currentX, y: gameInternalHeight - PLATFORM_HEIGHT - 70, width: 380, height: PLATFORM_HEIGHT, color: '#374151', type: 'normal'});
                 currentX += platforms[platforms.length-1].width + HORIZONTAL_GAP;
 
-                platforms.push({ x: currentX, y: gameInternalHeight - PLATFORM_HEIGHT - 110, width: 190, height: PLATFORM_HEIGHT, color: '#374151', type: 'normal'});
+                platforms.push({ x: currentX, y: gameInternalHeight - PLATFORM_HEIGHT - 130, width: 400, height: PLATFORM_HEIGHT, color: '#1d4ed8', type: 'checkpoint', contentKey: 'fraunhoferVrCad'});
+                currentX += platforms[platforms.length-1].width + HORIZONTAL_GAP;
+                platforms.push({ x: currentX, y: gameInternalHeight - PLATFORM_HEIGHT - 90, width: 400, height: PLATFORM_HEIGHT, color: '#1d4ed8', type: 'checkpoint', contentKey: 'fraunhoferArDigital'});
+                currentX += platforms[platforms.length-1].width + HORIZONTAL_GAP;
+                platforms.push({ x: currentX, y: gameInternalHeight - PLATFORM_HEIGHT - 150, width: 400, height: PLATFORM_HEIGHT, color: '#1d4ed8', type: 'checkpoint', contentKey: 'fraunhoferThesis'});
                 currentX += platforms[platforms.length-1].width + HORIZONTAL_GAP;
 
-                platforms.push({ x: currentX, y: gameInternalHeight - PLATFORM_HEIGHT - 160, width: 200, height: PLATFORM_HEIGHT, color: '#2563eb', type: 'checkpoint', contentKey: 'accentureAirbusVr'});
+                platforms.push({ x: currentX, y: gameInternalHeight - PLATFORM_HEIGHT - 110, width: 380, height: PLATFORM_HEIGHT, color: '#374151', type: 'normal'});
                 currentX += platforms[platforms.length-1].width + HORIZONTAL_GAP;
-                platforms.push({ x: currentX, y: gameInternalHeight - PLATFORM_HEIGHT - 120, width: 200, height: PLATFORM_HEIGHT, color: '#2563eb', type: 'checkpoint', contentKey: 'accentureAirbusSafety'});
+
+                platforms.push({ x: currentX, y: gameInternalHeight - PLATFORM_HEIGHT - 160, width: 400, height: PLATFORM_HEIGHT, color: '#2563eb', type: 'checkpoint', contentKey: 'accentureAirbusVr'});
                 currentX += platforms[platforms.length-1].width + HORIZONTAL_GAP;
-                platforms.push({ x: currentX, y: gameInternalHeight - PLATFORM_HEIGHT - 180, width: 200, height: PLATFORM_HEIGHT, color: '#2563eb', type: 'checkpoint', contentKey: 'accentureNestle'});
+                platforms.push({ x: currentX, y: gameInternalHeight - PLATFORM_HEIGHT - 120, width: 400, height: PLATFORM_HEIGHT, color: '#2563eb', type: 'checkpoint', contentKey: 'accentureAirbusSafety'});
                 currentX += platforms[platforms.length-1].width + HORIZONTAL_GAP;
-                platforms.push({ x: currentX, y: gameInternalHeight - PLATFORM_HEIGHT - 140, width: 200, height: PLATFORM_HEIGHT, color: '#2563eb', type: 'checkpoint', contentKey: 'accentureTsmc'});
+                platforms.push({ x: currentX, y: gameInternalHeight - PLATFORM_HEIGHT - 180, width: 400, height: PLATFORM_HEIGHT, color: '#2563eb', type: 'checkpoint', contentKey: 'accentureNestle'});
+                currentX += platforms[platforms.length-1].width + HORIZONTAL_GAP;
+                platforms.push({ x: currentX, y: gameInternalHeight - PLATFORM_HEIGHT - 140, width: 400, height: PLATFORM_HEIGHT, color: '#2563eb', type: 'checkpoint', contentKey: 'accentureTsmc'});
                 currentX += platforms[platforms.length-1].width + HORIZONTAL_GAP;
                 
-                platforms.push({ x: currentX, y: gameInternalHeight - PLATFORM_HEIGHT - 90, width: 225, height: PLATFORM_HEIGHT, color: '#059669', type: 'finishline'});
+                platforms.push({ x: currentX, y: gameInternalHeight - PLATFORM_HEIGHT - 90, width: 450, height: PLATFORM_HEIGHT, color: '#059669', type: 'finishline'});
                 
                 worldWidth = platforms[platforms.length - 1].x + platforms[platforms.length - 1].width + 200; 
                 
@@ -625,17 +626,22 @@
             const touchRight = document.getElementById('touch-right');
             const touchJump = document.getElementById('touch-jump');
 
+            function addTouchListener(element, key) {
+                 if (!element) return;
+                 element.addEventListener('mousedown', (e) => { e.preventDefault(); keys[key] = true; });
+                 element.addEventListener('mouseup', (e) => { e.preventDefault(); keys[key] = false; });
+                 element.addEventListener('mouseleave', (e) => { e.preventDefault(); keys[key] = false; }); // Handle mouse leaving button area
+                 element.addEventListener('touchstart', (e) => { e.preventDefault(); keys[key] = true; });
+                 element.addEventListener('touchend', (e) => { e.preventDefault(); keys[key] = false; });
+            }
+
             if (touchLeft && touchRight && touchJump) {
-                touchLeft.addEventListener('touchstart', (e) => { e.preventDefault(); keys.left = true; });
-                touchLeft.addEventListener('touchend', (e) => { e.preventDefault(); keys.left = false; });
-                touchRight.addEventListener('touchstart', (e) => { e.preventDefault(); keys.right = true; });
-                touchRight.addEventListener('touchend', (e) => { e.preventDefault(); keys.right = false; });
-                touchJump.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                    if (!player.isJumping && player.onGround && !showCelebration) {
-                        player.isJumping = true; player.onGround = false; player.velocityY = JUMP_FORCE;
-                    }
-                });
+                addTouchListener(touchLeft, 'left');
+                addTouchListener(touchRight, 'right');
+
+                 touchJump.addEventListener('mousedown', (e) => { e.preventDefault(); if (!player.isJumping && player.onGround && !showCelebration) { player.isJumping = true; player.onGround = false; player.velocityY = JUMP_FORCE; }});
+                 touchJump.addEventListener('touchstart', (e) => { e.preventDefault(); if (!player.isJumping && player.onGround && !showCelebration) { player.isJumping = true; player.onGround = false; player.velocityY = JUMP_FORCE; }});
+                 // No need for touchend/mouseup on jump as it's a single press, not a hold
             }
             
             initPlatformsAndResizeCanvas(); 
